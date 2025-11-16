@@ -1,0 +1,54 @@
+%YAML:1.0
+---
+
+#=====================================Detection=====================================#
+circularityThreshold: 45 # 圆度阈值
+medianBlurSize: 1        # 中值滤波核大小
+medianBlurSize_1: 3
+
+debug: 0     # debug模式
+dilationSize: 3      # 膨胀核大小
+dilationSize_1: 9
+erosionSize: 3       # 腐蚀核大小
+erosionSize_1: 5
+thresholdValue: 103  # 二值化阈值
+thresholdValueBlue: 103  # 二值化阈值
+thresholdValue_for_roi: 180
+thresholdValue_1: 103
+thresholdValueBlue_1: 160
+
+rect_area_threshold: 685 #面积阈值
+circle_area_threshold: 80 # 类圆轮廓面积阈值
+
+length_width_ratio_threshold: 3 # 长宽比阈值
+
+minContourArea: 80 # 最小轮廓面积
+target_circle_area_min: 4500
+target_circle_area_max: 15000
+R_area_min: 300
+R_area_max: 1800
+
+#=====================================Identify=====================================#
+list_size: 260
+
+d_Radius: 0.7
+d_P1P3: 0.254
+d_RP2: 0.825
+
+gap: 0
+gap_control: 1
+
+tx_cam2cloud: -0.1
+tx_cam2cloud_1: -0.254
+# 0
+# ty_cam2cloud: -1.42
+ty_cam2cloud: -0.235
+ty_cam2cloud_1: -0.38
+# -1.5
+# I0514 23:24:51.224388 234896 MessageManager.cpp:225] 当前crc: 0
+tz_cam2cloud: 0.
+tz_cam2cloud_1: 0.47
+# -0.2
+
+delta_t: 0.07
+

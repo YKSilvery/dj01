@@ -1,0 +1,247 @@
+%YAML:1.0
+#================全局部分================#
+
+#当前颜色，0为红色，1为蓝色
+color: 1
+#调试信息，INFO等级的日志是否输出，0为不输出，1为输出
+switch_INFO: 0
+#调试信息，ERROR等级的日志是否输出，0为不输出，1为输出
+switch_ERROR: 0
+#当前获取armor中心点方法，0为HIERARCHY，1为FLOODFILL
+get_armor_mode: 0
+
+#================相机部分================#
+
+#当前使用的相机序号，只连接一个相机时为0，多个相机在取流时可通过cam_index选择设备列表中对应顺序的相机
+cam_index: 0
+#===曝光时间===#
+enable_auto_exp: 0 # OFF
+energy_exp_time: 5000
+armor_exp_time: 2800
+#===白平衡===#
+#红色通道
+r_balance: 3600
+#绿色通道
+g_balance: 1024
+#蓝色通道
+b_balance: 1957
+#红色通道
+e_r_balance: 1500
+#绿色通道
+e_g_balance: 1024
+#蓝色通道
+e_b_balance: 4000
+#===以下参数重点参与实际帧率的调节===#
+#图像格式，设置为Bayer RG8，更多图像格式可前往MVS的SDK中寻找
+#此语句无法执行 本身也不需要修改 pixel_format: PixelType_Gvsp_BayerRG8
+#在经过测试之后，包括在官方SDK中没有调整Acquisition Frame Rate Control Enable的参数，不过在MVS软件中调试时此选项关闭后依然可以达到期望帧率
+#===其他参数===#
+#自动相机增益使能，0为OFF
+enable_auto_gain: 0
+#相机增益值
+gain: 17.0
+#相机伽马值，只有在伽马修正开启后有效
+gamma_value: 0.7
+#触发方式，从0至3依次为触发上升沿、下降沿、高电平、低电平
+trigger_activation: 0
+#设置帧率，仅在不设置外触发时起效
+frame_rate: 180.0
+#触发模式，ON为外触发，OFF为内触发，0为外触发
+enable_trigger: 0
+#触发源，0为MV_TRIGGER_SOURCE_LINE0
+trigger_source: 0
+
+#===============打符识别部分==============#
+
+#====取图蒙板参数====#
+#蒙板左上角相对x坐标倍数，范围0～1，TL即Left Top
+mask_TL_x: 0.0
+#蒙板左上角相对y坐标倍数，范围0～1，TL即Left Top
+mask_TL_y: 0.0
+#蒙板矩形相对宽度倍数，范围0～1-mask_TL_x
+mask_width: 1.0
+#蒙板矩形相对高度倍数，范围0～1-mask_TL_y
+mask_height: 1.0
+
+#======滤波开关======#
+#是否开启高斯滤波，0为关闭，1为开启
+switch_gaussian_blur: 0
+
+#======UI开关======#
+switch_UI_contours: 1
+switch_UI_areas: 1
+switch_UI: 1
+
+#======识别参数======#
+#装甲板最小面积
+s_armor_min: 300
+#装甲板最大面积
+s_armor_max: 6000
+#装甲板最小长宽比(长/宽)
+armor_ratio_min: 1.3 #1.6
+#装甲板最大长宽比(长/宽)
+armor_ratio_max: 4.8
+#装甲板最小面积比(轮廓面积/最小外包矩形面积)
+s_armor_ratio_min: 0.5
+#装甲板最大面积比(轮廓面积/最小外包矩形面积)
+s_armor_ratio_max: 1.0
+#使用漫水处理时装甲板最小面积
+s_armor_min_floodfill: 300
+#使用漫水处理时装甲板最大面积
+s_armor_max_floodfill: 6000
+#使用漫水处理时装甲板最小长宽比(长/宽)
+armor_ratio_min_floodfill: 0.7
+#使用漫水处理时装甲板最大长宽比(长/宽)
+armor_ratio_max_floodfill: 3.0
+#使用漫水处理时装甲板最小面积比(轮廓面积/最小外包矩形面积)
+s_armor_ratio_min_floodfill: 0.5
+#使用漫水处理时装甲板最大面积比(轮廓面积/最小外包矩形面积)
+s_armor_ratio_max_floodfill: 1.0
+
+#R最小面积
+s_R_min: 250 #300
+#R最大面积
+s_R_max: 800 #750
+#R最小长宽比(长/宽)
+R_ratio_min: 0.7   #0.7
+#R最大长宽比(长/宽)
+R_ratio_max: 1.5 #1.5
+#R最小面积比(轮廓面积/最小外包矩形面积)
+s_R_ratio_min: 0.25  #0.5
+#R最大面积比(轮廓面积/最小外包矩形面积)
+s_R_ratio_max: 1.7 #1.7
+#R最小圆度
+R_circularity_min: 0.1 #0.5
+#R最大圆度
+R_circularity_max: 0.9 #0.9
+#R最小紧致度
+R_compactness_min: 12 #14
+#R最大紧致度
+R_compactness_max: 60 #27
+#扇页最小面积
+s_wing_min: 1000
+#扇页最大面积
+s_wing_max: 1400
+#扇页最小长宽比(长/宽)
+wing_ratio_min: 1.4
+#扇页最大长宽比(长/宽)
+wing_ratio_max: 5.5
+#扇页最小面积比(轮廓面积/最小外包矩形面积)
+s_wing_ratio_min: 0.2
+#扇页最大面积比(轮廓面积/最小外包矩形面积)
+s_wing_ratio_max: 3.0
+#扇页上半部分最小面积
+s_winghat_min: 200
+#扇页上半部分最大面积
+s_winghat_max: 500
+#扇页上半部分最小长宽比(长/宽)
+winghat_ratio_min: 1.7
+#扇页上半部分最大长宽比(长/宽)
+winghat_ratio_max: 3.8
+#扇页上半部分最小面积比(轮廓面积/最小外包矩形面积)
+s_winghat_ratio_min: 0.15
+#扇页上半部分最大面积比(轮廓面积/最小外包矩形面积)
+s_winghat_ratio_max: 0.4
+#能量机关半径 mm
+R: 700
+#能量机关实际宽度
+length: 0.68
+#云台标准位置离R高度
+hight: 1.2
+#打击点距能量机关R水平距离
+hit_dx: 6.50
+#匀速转动角速度（小符）
+constant_speed: 60.0
+# 是否逆时针转动 1是-1不是
+direction: 1
+#空气摩擦系数
+init_k_: 0.02
+#速度函数参数
+A: 0.912
+w: 1.942
+fai: 0.0
+#膨胀操作参数
+#第一次膨胀的参数
+dialte1: 1
+#第二次膨胀的参数
+dialte2: 1.0
+#第三次膨胀的参数
+dialte3: 1.0
+#预测偏置参数
+re_time: 0.21 #0.06~0.1约等于半个装甲板
+#二值化阈值
+#二值化最小值
+thb:  60.0
+#二值化最大值
+tht:  108.0 #108
+
+#===R感兴趣区域===#
+#左边界倍率
+R_roi_xl: 0.28
+#上边界倍率
+R_roi_yt: 0.65
+#右边界倍率
+R_roi_xr: 0.415
+#下边界倍率
+R_roi_yb: 0.37
+#时间、速度、角速度队列的大小
+list_size: 100
+
+fake_pitch: 0.0
+fake_yaw: 0.0
+fake_bullet_v: 250.0
+fake_status: 6
+fake_now_time: 0
+fake_predict_time: 0
+#=====hsv数据=====#
+hmin: 80
+hmax: 135 #101 #124
+smin: 0 #36
+smax: 255
+vmin: 160 #46 
+vmax: 255
+e_hmin: 0
+e_hmax: 30
+e_smin: 119
+e_smax: 255
+e_vmin: 80
+e_vmax: 255
+#==蓝色==#
+bl_hmin: 84
+bl_hmax: 101 #124
+bh_hmin: 180
+bh_hmax: 180
+b_smin: 36
+b_smax: 255
+b_vmin: 46 
+b_vmax: 255
+#==红色==#
+rl_hmin: 0
+rl_hmax: 99
+rh_hmin: 139
+rh_hmax: 180
+r_smin: 0
+r_smax: 255
+r_vmin: 159
+r_vmax: 255
+#==青色==#
+cl_hmin: 78
+cl_hmax: 99
+ch_hmin: 180
+ch_hmax: 180
+c_smin: 99
+c_smax: 255
+c_vmin: 200 
+c_vmax: 255
+#==橙色==#
+ol_hmin: 2
+ol_hmax: 21
+oh_hmin: 180
+oh_hmax: 180
+o_smin: 102
+o_smax: 255
+o_vmin: 154
+o_vmax: 255
+realy_mid: 700
+camera2shootBias: 0.0
+pzy: -0.048

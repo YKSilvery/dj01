@@ -1,0 +1,22 @@
+%YAML:1.0
+---
+cost_threshold: 1600.
+max_lost_frame: 15.
+s2qxyz: 450.
+s2qyaw: 2.0000000000000000e-03
+s2qr: 100.
+r_xy_factor: 1.0000000000000001e-05
+r_z: 1.0000000000000000e-03
+r_yaw: 5.
+s2qxyz_outpost: 300.
+s2qyaw_outpost: 0.
+r_xy_factor_outpost: 6.0000000000000002e-05
+r_z_outpost: 5.0000000000000001e-03
+s2p0xyr: 1000.
+s2p0yaw: 50.
+r_initial: 300.
+small_armor_a: 6.7500000000000000e+01
+small_armor_b: 2.8500000000000000e+01
+big_armor_a: 1.1250000000000000e+02
+big_armor_b: 2.8500000000000000e+01
+resize: 5.0000000000000000e-01
