@@ -44,6 +44,15 @@ ament_target_dependencies(detector_node rclcpp sensor_msgs cv_bridge geometry_ms
 target_link_libraries(detector_node openvino::runtime Ceres::ceres Eigen3::Eigen)
 target_include_directories(detector_node PUBLIC include)
 
+add_executable(detector_ref_node
+  src/detector_ref_node.cpp
+  src/ref_detection.cpp
+  src/armor_pnp_solver.cpp
+)
+ament_target_dependencies(detector_ref_node rclcpp sensor_msgs cv_bridge geometry_msgs OpenCV aimbot_msgs std_msgs)
+target_link_libraries(detector_ref_node Ceres::ceres Eigen3::Eigen)
+target_include_directories(detector_ref_node PUBLIC include)
+
 add_executable(tracker_node
   src/tracker_node.cpp
   src/ekf_tracker.cpp
@@ -66,6 +75,7 @@ endif()
 
 install(TARGETS
   detector_node
+  detector_ref_node
   tracker_node
   DESTINATION lib/${PROJECT_NAME}
 )

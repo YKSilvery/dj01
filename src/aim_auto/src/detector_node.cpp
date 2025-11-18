@@ -242,7 +242,8 @@ public:
                         RCLCPP_ERROR(get_logger(), "Failed to initialize ArmorPnPSolver: %s", e.what());
                 }
 
-    const std::string model_path = "/home/yksilvery/RM/Aimbot/src/model/best.onnx";
+    const std::filesystem::path model_rel = source_dir.parent_path().parent_path() / "model" / "best.onnx";
+    const std::string model_path = model_rel.string();
     try {
       model_ = core_.read_model(model_path);
       RCLCPP_INFO(get_logger(), "Loaded model: %s", model_path.c_str());

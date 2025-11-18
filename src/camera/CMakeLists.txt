@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(camera)
 
 # 配置选项(使用视频文件或硬件相机)
-option(CAMERA_USE_VIDEO_SOURCE "Use prerecorded video files instead of the hardware camera" OFF)
+option(CAMERA_USE_VIDEO_SOURCE "Use prerecorded video files instead of the hardware camera" ON)
 
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
