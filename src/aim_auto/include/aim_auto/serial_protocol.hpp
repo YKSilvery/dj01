@@ -34,6 +34,7 @@ struct MessData
   float vyaw = 0.0F;
   std::uint16_t crc = 0U;
   std::uint8_t tail = kVisionFrameTail;
+  std::uint16_t padding = 0U;  // Padding to make 61 bytes
 };
 
 struct NavCommand
@@ -102,15 +103,18 @@ constexpr std::size_t kVisionFrameSize = sizeof(MessData);
 
 inline std::uint16_t crc16(const std::uint8_t * buffer, std::size_t length)
 {
-  std::uint16_t crc = 0;
+  std::uint32_t crc = 0;
   for (std::size_t j = 0; j < length; ++j) {
-    crc ^= static_cast<std::uint16_t>(buffer[j]) << 8;
+    crc ^= static_cast<std::uint32_t>(buffer[j]) << 8;
     for (int i = 0; i < 8; ++i) {
-      const std::uint16_t tmp = crc << 1;
-      crc = (crc & 0x8000) ? static_cast<std::uint16_t>(tmp ^ 0x1021) : tmp;
+      std::uint32_t tmp = crc << 1;
+      if (crc & 0x8000U) {
+        tmp ^= 0x1021U;
+      }
+      crc = tmp;
     }
   }
-  return crc;
+  return static_cast<std::uint16_t>(crc);
 }
 
 inline void updateCrc(MessData & data)
@@ -121,7 +125,10 @@ inline void updateCrc(MessData & data)
 
 inline bool verifyCrc(const MessData & data)
 {
-  return crc16(reinterpret_cast<const std::uint8_t *>(&data), 61) == data.crc;
+  MessData temp = data;
+  const std::uint16_t expected = temp.crc;
+  temp.crc = 0;
+  return crc16(reinterpret_cast<const std::uint8_t *>(&temp), 61) == expected;
 }
 
 }  // namespace aim_auto
