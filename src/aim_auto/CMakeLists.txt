@@ -53,6 +53,13 @@ ament_target_dependencies(detector_ref_node rclcpp sensor_msgs cv_bridge geometr
 target_link_libraries(detector_ref_node Ceres::ceres Eigen3::Eigen)
 target_include_directories(detector_ref_node PUBLIC include)
 
+add_executable(serial_bridge_node
+  src/serial_bridge_node.cpp
+  src/serial_port.cpp
+)
+ament_target_dependencies(serial_bridge_node rclcpp std_msgs aimbot_msgs)
+target_include_directories(serial_bridge_node PUBLIC include)
+
 add_executable(tracker_node
   src/tracker_node.cpp
   src/ekf_tracker.cpp
@@ -76,6 +83,7 @@ endif()
 install(TARGETS
   detector_node
   detector_ref_node
+  serial_bridge_node
   tracker_node
   DESTINATION lib/${PROJECT_NAME}
 )

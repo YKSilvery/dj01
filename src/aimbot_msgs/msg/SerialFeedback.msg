@@ -1,0 +1,17 @@
+std_msgs/Header header
+float32 yaw
+float32 pitch
+uint8 status
+uint8 armor_flag
+bool allround
+float32 latency
+float32 x_c
+float32 v_x
+float32 y_c
+float32 v_y
+float32 z1
+float32 z2
+float32 r1
+float32 r2
+float32 yaw_a
+float32 vyaw
