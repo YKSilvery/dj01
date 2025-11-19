@@ -170,6 +170,10 @@ private:
         RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 1000, "Invalid tail byte from serial");
         continue;
       }
+      if (!verifyCrc(inbound)) {
+        RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 1000, "CRC check failed for received frame");
+        continue;
+      }
       RCLCPP_INFO(get_logger(), "Received valid MessData frame from serial: yaw=%.3f, pitch=%.3f", inbound.yaw, inbound.pitch);
       handleFeedback(inbound);
     }
