@@ -746,7 +746,7 @@ void EkfTracker::updateDetections(const std::vector<ArmorDetection> &detections,
   for (size_t i = 0; i < assignment.size(); ++i) {
     if (assignment[i] >= 0) {
       const double cost = cost_matrix[i][assignment[i]];
-      RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "Detection %zu (class %d) matched to slot %d with cost %.2f", i, detections[i].class_id, assignment[i], cost);
+      //RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "Detection %zu (class %d) matched to slot %d with cost %.2f", i, detections[i].class_id, assignment[i], cost);
       ++matched_count;
     } else {
       // Find the minimum cost for this detection
@@ -760,14 +760,14 @@ void EkfTracker::updateDetections(const std::vector<ArmorDetection> &detections,
         }
       }
       if (has_slots) {
-        RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "Detection %zu (class %d) not matched, min cost %.2f to slot %zu (class %d)", i, detections[i].class_id, min_cost, best_j, predicted_slots_[best_j].armor.class_id);
+        //RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "Detection %zu (class %d) not matched, min cost %.2f to slot %zu (class %d)", i, detections[i].class_id, min_cost, best_j, predicted_slots_[best_j].armor.class_id);
       } else {
-        RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "Detection %zu (class %d) not matched, no predicted slots", i, detections[i].class_id);
+        //RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "Detection %zu (class %d) not matched, no predicted slots", i, detections[i].class_id);
       }
     }
   }
-  RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "Hungarian matching: %zu detections, %zu matched, %zu unmatched",
-              detections.size(), matched_count, detections.size() - matched_count);
+  //RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "Hungarian matching: %zu detections, %zu matched, %zu unmatched",
+  //            detections.size(), matched_count, detections.size() - matched_count);
 
   for (std::size_t i = 0; i < detections.size(); ++i) {
     if (assignment[i] < 0) {
@@ -811,20 +811,21 @@ void EkfTracker::updateDetections(const std::vector<ArmorDetection> &detections,
       }
       Eigen::VectorXd &state = filters_[i].mutable_state();
       // Debug: Log state values before sanity check
-      RCLCPP_DEBUG(rclcpp::get_logger("ekf_tracker"), "Tracker class %d state: r1=%.2f, r2=%.2f, vyaw=%.2f",
-                   class_ids_[i], state(7), state(8), state(10));
+      //RCLCPP_DEBUG(rclcpp::get_logger("ekf_tracker"), "Tracker class %d state: r1=%.2f, r2=%.2f, vyaw=%.2f",
+      //             class_ids_[i], state(7), state(8), state(10));
       const double old_r1 = state(7);
       const double old_r2 = state(8);
       state(7) = std::clamp(state(7), 100.0, 450.0);
       state(8) = std::clamp(state(8), 100.0, 450.0);
-      if (state(7) != old_r1 || state(8) != old_r2) {
-        RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"),
-                    "Tracker class %d clamped r1/r2: %.2f -> %.2f, %.2f -> %.2f",
-                    class_ids_[i], old_r1, state(7), old_r2, state(8));
+      if (old_r1 < 100.0 || old_r1 > 450.0 || old_r2 < 100.0 || old_r2 > 450.0) {
+        std::string reason = "Tracker class " + std::to_string(class_ids_[i]) + " removed due to: r1/r2 out of range (r1=" + std::to_string(old_r1) + ", r2=" + std::to_string(old_r2) + ")";
+        //RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "%s", reason.c_str());
+        removeTrack(i);
+        continue;
       }
       if (std::abs(state(10)) > 20.0) {
         std::string reason = "Tracker class " + std::to_string(class_ids_[i]) + " removed due to: |vyaw| > 20 ";
-        RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "%s", reason.c_str());
+        //RCLCPP_INFO(rclcpp::get_logger("ekf_tracker"), "%s", reason.c_str());
         removeTrack(i);
         continue;
       }

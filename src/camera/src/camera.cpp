@@ -23,7 +23,7 @@
 
 namespace camera
 {
-
+//test
 #ifdef CAMERA_USE_VIDEO_STREAM
 
 class CameraNode : public rclcpp::Node

@@ -168,24 +168,6 @@ private:
       MessData inbound{};
       std::memcpy(&inbound, read_accumulator_.data(), kVisionFrameSize);
       read_accumulator_.erase(read_accumulator_.begin(), read_accumulator_.begin() + kVisionFrameSize);
-      if (inbound.tail != kVisionFrameTail) {
-        RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 1000, "Invalid tail byte from serial");
-        continue;
-      }
-      if (!verifyCrc(inbound)) {
-        RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 1000, "CRC check failed for received frame");
-        RCLCPP_INFO(get_logger(), "Received frame CRC: %04X, calculated CRC: %04X", inbound.crc, crc16(reinterpret_cast<const std::uint8_t*>(&inbound), 61));
-        RCLCPP_INFO(get_logger(), "Frame data: head=%02X, tail=%02X, yaw=%.3f, pitch=%.3f", inbound.head, inbound.tail, inbound.yaw, inbound.pitch);
-        // Print first 16 bytes of received data
-        const std::uint8_t* data = reinterpret_cast<const std::uint8_t*>(&inbound);
-        std::stringstream ss;
-        ss << "Received data bytes: ";
-        for (int i = 0; i < 16; ++i) {
-          ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(data[i]) << " ";
-        }
-        RCLCPP_INFO(get_logger(), "%s", ss.str().c_str());
-        continue;
-      }
       RCLCPP_INFO(get_logger(), "Received valid MessData frame from serial: yaw=%.3f, pitch=%.3f", inbound.yaw, inbound.pitch);
       handleFeedback(inbound);
     }

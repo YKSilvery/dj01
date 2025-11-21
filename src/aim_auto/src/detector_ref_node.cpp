@@ -348,6 +348,11 @@ private:
           continue;
         }
 
+        // Debug: Print neural network detection results
+        RCLCPP_INFO(get_logger(), "Neural network detected: number='%s', confidence=%.3f, mapped_label='%s' (relative_index=%d, is_big=%s)",
+                    armor.number.c_str(), armor.confidence, mapped_label->display_name.c_str(),
+                    mapped_label->relative_index, mapped_label->is_big ? "true" : "false");
+
         const std::array<cv::Point2f, 4> polygon{
           armor.left_light.bottom,
           armor.left_light.top,
@@ -375,6 +380,10 @@ private:
         aim_auto::TargetColor color = target_color_;
         const int color_offset = color == aim_auto::TargetColor::BLUE ? 0 : 7;
         const int class_id = color_offset + mapped_label->relative_index;
+
+        // Debug: Print final class_id calculation
+        RCLCPP_INFO(get_logger(), "Final class_id calculation: color=%s (offset=%d) + relative_index=%d = class_id=%d",
+                    aim_auto::to_color_string(color).c_str(), color_offset, mapped_label->relative_index, class_id);
 
         geometry_msgs::msg::Point32 p1, p2, p3, p4;
         p1.x = polygon[0].x;

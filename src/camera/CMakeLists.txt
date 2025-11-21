@@ -85,7 +85,7 @@ install(DIRECTORY launch/
   FILES_MATCHING PATTERN "*.py"
 )
 
-install(DIRECTORY src/video/
+install(DIRECTORY video/
   DESTINATION share/${PROJECT_NAME}/video
 )
 

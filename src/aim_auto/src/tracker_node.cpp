@@ -145,6 +145,16 @@ private:
     marker_array_pub_->publish(marker_array);
 #endif
 
+    // Debug: Print tracked detections positions
+    for (size_t i = 0; i < tracked_msg.detections.size(); ++i) {
+      const auto & detection = tracked_msg.detections[i];
+      RCLCPP_INFO(get_logger(), "Tracked detection %zu: class_id=%d, position=(%.2f, %.2f, %.2f) mm",
+                  i, detection.class_id,
+                  detection.translation_vector[0],
+                  detection.translation_vector[1],
+                  detection.translation_vector[2]);
+    }
+
     tracked_pub_->publish(tracked_msg);
   }
 
@@ -231,7 +241,7 @@ private:
       marker.color.b = 0.0;  // Red
     }
     marker.color.a = 1.0;
-    marker.lifetime = rclcpp::Duration::from_seconds(3.0);
+    marker.lifetime = rclcpp::Duration::from_seconds(0.1);
 
     std::vector<cv::Point3d> object_points;
     if (armor.class_id == 5 || armor.class_id == 12) {

@@ -190,13 +190,16 @@ public:
     fps_ = 0.0;
 
     // Declare parameters
-    this->declare_parameter<float>("confidence_threshold", 0.85f);
+    this->declare_parameter<float>("confidence_threshold", 0.25f);
     this->declare_parameter<std::string>("detection_topic", "detections");
     this->declare_parameter<std::string>("gimbal_yaw_topic", "");
     this->declare_parameter<std::string>("gimbal_pitch_topic", "");
     this->declare_parameter<double>("initial_gimbal_yaw_deg", 0.0);
     this->declare_parameter<double>("initial_gimbal_pitch_deg", 0.0);
     this->declare_parameter<double>("fixed_pitch_deg", 15.0);
+
+    // Declare parameters
+    this->declare_parameter<std::string>("target_color", "all");
 
     // Get parameters
     confidence_threshold_ = this->get_parameter("confidence_threshold").as_double();
@@ -206,6 +209,7 @@ public:
     gimbal_yaw_rad_ = deg2rad(this->get_parameter("initial_gimbal_yaw_deg").as_double());
     gimbal_pitch_rad_ = deg2rad(this->get_parameter("initial_gimbal_pitch_deg").as_double());
     fixed_pitch_rad_ = deg2rad(this->get_parameter("fixed_pitch_deg").as_double());
+    target_color_ = this->get_parameter("target_color").as_string();
 
     // Parameter callback for dynamic reconfiguration
     param_callback_handle_ = this->add_on_set_parameters_callback(
@@ -242,7 +246,7 @@ public:
                         RCLCPP_ERROR(get_logger(), "Failed to initialize ArmorPnPSolver: %s", e.what());
                 }
 
-    const std::filesystem::path model_rel = source_dir.parent_path().parent_path() / "model" / "best.onnx";
+    const std::filesystem::path model_rel = source_dir.parent_path().parent_path() / "model" / "best.xml";
     const std::string model_path = model_rel.string();
     try {
       model_ = core_.read_model(model_path);
@@ -293,9 +297,28 @@ private:
           result.successful = false;
           result.reason = "confidence_threshold must be a double";
         }
+      } else if (param.get_name() == "target_color") {
+        if (param.get_type() == rclcpp::ParameterType::PARAMETER_STRING) {
+          target_color_ = param.as_string();
+          RCLCPP_INFO(get_logger(), "Updated target color to: %s", target_color_.c_str());
+        } else {
+          result.successful = false;
+          result.reason = "target_color must be a string";
+        }
       }
     }
     return result;
+  }
+
+  bool isTargetColor(int class_id) const {
+    if (target_color_ == "all") return true;
+    // 假设class_id 0-3: red, 4-7: blue, 8+: other
+    if (target_color_ == "red") {
+      return class_id >= 7 && class_id <= 13;
+    } else if (target_color_ == "blue") {
+      return class_id >= 0 && class_id <= 6;
+    }
+    return false;
   }
         void image_callback(const aimbot_msgs::msg::CameraImage::SharedPtr msg) {
         try {
@@ -413,6 +436,8 @@ private:
                 const cv::Rect &box = boxes[idx];
                 const float confidence = confidences[idx];
                 const int class_id = class_ids[idx];
+
+                if (!isTargetColor(class_id)) continue;
 
                 aimbot_msgs::msg::Detection detection;
                 detection.header = image_msg.header;
@@ -789,13 +814,14 @@ private:
     std::string detection_topic_ = "detections";
     std::string gimbal_yaw_topic_;
     std::string gimbal_pitch_topic_;
+    std::string target_color_ = "all";
 
     // FPS calculation
     std::chrono::steady_clock::time_point last_fps_time_;
     int frame_count_ = 0;
     double fps_ = 0.0;
 
-    int target_img_size_ = 640;
+    int target_img_size_ = 320;
     int num_attrs_ = 0;
     int num_predictions_ = 0;
     int num_classes_ = 0;
